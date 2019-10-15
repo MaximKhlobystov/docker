@@ -99,7 +99,7 @@ sed -i "s/rtmp[s]*:\/\/\([^\"\/]*\)\([\"\/]\)/$PROTOCOL_RTMP:\/\/$HOST\2/g" /var
 sed -i "s/server_name  .*/server_name  $HOST;/g" /etc/nginx/sites-available/bigbluebutton
 
 sed -i "s/bigbluebutton.web.serverURL=http[s]*:\/\/.*/bigbluebutton.web.serverURL=$PROTOCOL_HTTP:\/\/$HOST/g" \
-  /var/lib/tomcat7/webapps/bigbluebutton/WEB-INF/classes/bigbluebutton.properties
+  /usr/share/bbb-web/WEB-INF/classes/bigbluebutton.properties
 
 # Update Java screen share configuration
 change_var_value /usr/share/red5/webapps/screenshare/WEB-INF/screenshare.properties streamBaseUrl rtmp://$HOST/screenshare
@@ -156,8 +156,8 @@ HERE
 # Setup tomcat7 to share the TURN server information with clients (with matching secret)
 cat > /var/lib/tomcat7/webapps/bigbluebutton/WEB-INF/spring/turn-stun-servers.xml << HERE
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" 
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
    <bean id="turn0" class="org.bigbluebutton.web.services.turn.TurnServer">
       <constructor-arg index="0" value="$TURN_SECRET" />
@@ -206,10 +206,10 @@ HERE
 
 
 # Ensure bbb-apps-akka has the latest shared secret from bbb-web
-if [ -z "$SECRET" ]; then 
-  SECRET=$(cat /var/lib/tomcat7/webapps/bigbluebutton/WEB-INF/classes/bigbluebutton.properties | grep -v '#' | grep securitySalt | cut -d= -f2);
+if [ -z "$SECRET" ]; then
+  SECRET=$(cat /usr/share/bbb-web/WEB-INF/classes/bigbluebutton.properties | grep -v '#' | grep securitySalt | cut -d= -f2);
 else
-  change_var_value /var/lib/tomcat7/webapps/bigbluebutton/WEB-INF/classes/bigbluebutton.properties securitySalt $SECRET
+  change_var_value /usr/share/bbb-web/WEB-INF/classes/bigbluebutton.properties securitySalt $SECRET
   sed -i "s/String salt = .*/String salt = \"$SECRET\";/g" /var/lib/tomcat7/webapps/demo/bbb_api_conf.jsp
 fi
 
@@ -264,4 +264,3 @@ HERE
 updatedb
 
 exec /usr/bin/supervisord > /var/log/supervisord.log
-
