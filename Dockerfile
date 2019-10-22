@@ -54,8 +54,9 @@ RUN apt-get install -y coturn xmlstarlet vim mlocate
 
 # -- Install supervisor to run all the BigBlueButton processes (replaces systemd)
 RUN apt-get install -y supervisor
-RUN mkdir -p /var/log/supervisor
-ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#RUN mkdir -p /var/log/supervisor
+#ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # -- Modify FreeSWITCH event_socket.conf.xml to listen to IPV4
 ADD mod/event_socket.conf.xml /opt/freeswitch/etc/freeswitch/autoload_configs
@@ -66,4 +67,4 @@ ADD mod/external.xml          /opt/freeswitch/conf/sip_profiles/external.xml
 # -- Finish startup
 ADD setup.sh /root/setup.sh
 ENTRYPOINT ["/root/setup.sh"]
-CMD []
+CMD ["/usr/bin/supervisord"]

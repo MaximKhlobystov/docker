@@ -263,4 +263,4 @@ HERE
 
 updatedb
 
-exec /usr/bin/supervisord > /var/log/supervisord.log
+#exec /usr/bin/supervisord > /var/log/supervisord.log
