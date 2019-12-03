@@ -63,6 +63,13 @@ ADD mod/external.xml          /opt/freeswitch/conf/sip_profiles/external.xml
 
 # RUN apt-get install -y bbb-etherpad
 
+# -- Install latest HTML5 client from source
+RUN supervisorctl stop bbb-html5
+ADD . /bigbluebutton-html5
+WORKDIR /bigbluebutton-html5
+RUN meteor npm install
+WORKDIR /
+
 # -- Finish startup
 ADD setup.sh /root/setup.sh
 ENTRYPOINT ["/root/setup.sh"]
