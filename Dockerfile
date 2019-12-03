@@ -52,6 +52,10 @@ RUN apt-get install -y bbb-html5
 RUN apt-get update
 RUN apt-get install -y coturn xmlstarlet vim mlocate
 
+# -- Install Meteor
+RUN curl https://install.meteor.com/ | sh
+ENV METEOR_ALLOW_SUPERUSER true
+
 # -- Install supervisor to run all the BigBlueButton processes (replaces systemd)
 RUN apt-get install -y supervisor
 RUN mkdir -p /var/log/supervisor
